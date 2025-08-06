@@ -1,4 +1,3 @@
-import axios from "axios";
 import api from "./axiosInstance";
 import { useAuthStore } from "../store/authStore";
 import { SignupFormInputs } from "../types/auth";

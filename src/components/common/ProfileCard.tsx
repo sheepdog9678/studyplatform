@@ -9,7 +9,7 @@ const ProfileCard: React.FC = () => {
     useAuthStore.getState().setToken("dummy-token");
     useAuthStore.getState().setUser({
       id: 1,
-      nickname: "온라인 독서실",
+      nickname: "배포 테스트",
       status: "STUDENT",
       groupList: [
         {
