@@ -2,7 +2,7 @@ export type BaseNote = {
   noteId: number;
   title: string;
   content: string;
-  createdAt: string;
+  createAt: string;
   modifiedAt: string;
 };
 
@@ -11,9 +11,7 @@ export type Note = BaseNote & {
 };
 
 export type NoteListResponse = {
-  data: {
-    content: Note[];
-  };
+  data: Note[];
 };
 
 export type NoteResponse = {

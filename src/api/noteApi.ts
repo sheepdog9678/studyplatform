@@ -3,7 +3,6 @@ import { Note, NoteListResponse, NoteResponse } from "../types/note";
 
 export const getNotes = async (): Promise<NoteListResponse> => {
   const response = await api.get("/api/notes/all");
-  console.log(response);
   return response.data;
 };
 

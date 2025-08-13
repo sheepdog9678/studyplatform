@@ -4,7 +4,6 @@ import { formatDate } from "../../utils/date";
 
 const NoteCard: React.FC<{ note: Note }> = ({ note }) => {
   const navigate = useNavigate();
-
   return (
     <div
       onClick={() => navigate(`/note/${note.noteId}`)}
@@ -16,7 +15,7 @@ const NoteCard: React.FC<{ note: Note }> = ({ note }) => {
           <p className="text-sm text-[#495057] line-clamp-4">{note.content}</p>
         </div>
         <time className="text-xs text-right text-[#C1C6CC] mt-2">
-          {formatDate(note.createdAt)}
+          {formatDate(note.createAt)}
         </time>
       </article>
     </div>

@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import { dummyNotes } from "../../data/notedata";
-// import { createNote, getNote, updateNote } from "../../api/noteApi";
-// import { Note } from "../../types/note";
+import { createNote, getNote, updateNote } from "../../api/noteApi";
+import { Note } from "../../types/note";
 
 type FormValues = {
   title: string;
@@ -28,9 +28,9 @@ const NoteForm: React.FC = () => {
       if (isEdit && noteId) {
         try {
           // api 통신후 수정
-          // const res = await getNote(Number(noteId));
-          // const note: Note = res.data;
-          const note = dummyNotes.find((n) => n.noteId === Number(noteId));
+          const res = await getNote(Number(noteId));
+          const note: Note = res.data;
+          // const note = dummyNotes.find((n) => n.noteId === Number(noteId));
           if (note) {
             setValue("title", note.title);
             setValue("content", note.content);
@@ -47,39 +47,39 @@ const NoteForm: React.FC = () => {
     const now = new Date().toISOString();
 
     if (isEdit && noteId) {
-      const index = dummyNotes.findIndex((n) => n.noteId === Number(noteId));
-      if (index !== -1) {
-        dummyNotes[index] = {
-          ...dummyNotes[index],
-          title: data.title,
-          content: data.content,
-          modifiedAt: now,
-        };
-      }
+      // const index = dummyNotes.findIndex((n) => n.noteId === Number(noteId));
+      // if (index !== -1) {
+      //   dummyNotes[index] = {
+      //     ...dummyNotes[index],
+      //     title: data.title,
+      //     content: data.content,
+      //     modifiedAt: now,
+      //   };
+      // }
       // 실제 API
-      // await updateNote(Number(noteId), data);
+      await updateNote(Number(noteId), data);
 
       navigate(`/note/${noteId}`);
     } else {
-      const newId = dummyNotes.length
-        ? Math.max(...dummyNotes.map((n) => n.noteId)) + 1
-        : 1;
+      // const newId = dummyNotes.length
+      //   ? Math.max(...dummyNotes.map((n) => n.noteId)) + 1
+      //   : 1;
 
-      dummyNotes.push({
-        noteId: newId,
-        title: data.title,
-        content: data.content,
-        userId: 1,
-        createdAt: now,
-        modifiedAt: now,
-      });
+      // dummyNotes.push({
+      //   noteId: newId,
+      //   title: data.title,
+      //   content: data.content,
+      //   userId: 1,
+      //   createdAt: now,
+      //   modifiedAt: now,
+      // });
       //   api 통신후 수정
-      //   try {
-      //     const res = await createNote(data);
-      //     navigate("/note");
-      //   } catch (err) {
-      //     alert("노트 생성 실패");
-      //   }
+      try {
+        await createNote(data);
+        navigate("/note");
+      } catch (err) {
+        alert("노트 생성 실패");
+      }
 
       navigate("/note");
     }
