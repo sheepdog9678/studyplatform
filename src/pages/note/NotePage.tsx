@@ -3,7 +3,7 @@ import Layout from "../../components/layout/Layout";
 import NoteCard from "../../components/note/NoteCard";
 import { Note } from "../../types/note";
 import { getNotes } from "../../api/noteApi";
-import { dummyNotes } from "../../data/notedata";
+// import { dummyNotes } from "../../data/notedata";
 import AddButton from "../../components/common/AddButton";
 import { useNavigate } from "react-router-dom";
 

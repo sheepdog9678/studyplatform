@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 
 const api = axios.create({
@@ -9,7 +9,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   let token = useAuthStore.getState().token;
-  console.log("확인", useAuthStore.persist.rehydrate());
+  console.log("axios token", token);
 
   if (!token && typeof window !== "undefined") {
     try {
@@ -25,8 +25,7 @@ api.interceptors.request.use((config) => {
   }
 
   if (token) {
-    const h = config.headers as AxiosHeaders | undefined;
-    h?.set?.("Authorization", `Bearer ${token}`);
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;

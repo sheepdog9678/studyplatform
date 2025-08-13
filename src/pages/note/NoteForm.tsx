@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { dummyNotes } from "../../data/notedata";
+// import { dummyNotes } from "../../data/notedata";
 import { createNote, getNote, updateNote } from "../../api/noteApi";
 import { Note } from "../../types/note";
 
@@ -44,7 +44,7 @@ const NoteForm: React.FC = () => {
   }, [isEdit, noteId, setValue]);
 
   const onSubmit = async (data: FormValues) => {
-    const now = new Date().toISOString();
+    // const now = new Date().toISOString();
 
     if (isEdit && noteId) {
       // const index = dummyNotes.findIndex((n) => n.noteId === Number(noteId));
