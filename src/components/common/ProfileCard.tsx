@@ -1,44 +1,51 @@
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 
 const ProfileCard: React.FC = () => {
   const { user } = useAuthStore();
+  console.log("user", user);
 
-  useEffect(() => {
-    // 개발 중 테스트용
-    useAuthStore.getState().setToken("dummy-token");
-    useAuthStore.getState().setUser({
-      id: 1,
-      nickname: "배포 테스트",
-      status: "STUDENT",
-      groupList: [
-        {
-          groupId: 1,
-          managerId: 1,
-          memberIds: [2, 3, 4, 5],
-          memberNicknames: ["siyeon1", "siyeon2", "siyeon3", "siyeon4"],
-          groupName: "알고리즘 마스터",
-          maxParticipants: 10,
-          createdAt: "2024-11-22 00:00:00",
-          modifiedAt: "2024-11-22 00:00:00",
-        },
-        {
-          groupId: 2,
-          managerId: 2,
-          memberIds: [6, 7],
-          memberNicknames: ["jinho", "eunji"],
-          groupName: "토익 스터디",
-          maxParticipants: 8,
-          createdAt: "2024-11-23 00:00:00",
-          modifiedAt: "2024-11-23 00:00:00",
-        },
-      ],
-    });
-  }, []);
+  // useEffect(() => {
+  // 개발 중 테스트용
+  //   useAuthStore.getState().setToken("dummy-token");
+  //   useAuthStore.getState().setUser({
+  //     id: 1,
+  //     nickname: "배포 테스트",
+  //     status: "STUDENT",
+  //     groupList: [
+  //       {
+  //         groupId: 1,
+  //         managerId: 1,
+  //         memberIds: [2, 3, 4, 5],
+  //         memberNicknames: ["siyeon1", "siyeon2", "siyeon3", "siyeon4"],
+  //         groupName: "알고리즘 마스터",
+  //         maxParticipants: 10,
+  //         createdAt: "2024-11-22 00:00:00",
+  //         modifiedAt: "2024-11-22 00:00:00",
+  //       },
+  //       {
+  //         groupId: 2,
+  //         managerId: 2,
+  //         memberIds: [6, 7],
+  //         memberNicknames: ["jinho", "eunji"],
+  //         groupName: "토익 스터디",
+  //         maxParticipants: 8,
+  //         createdAt: "2024-11-23 00:00:00",
+  //         modifiedAt: "2024-11-23 00:00:00",
+  //       },
+  //     ],
+  //   });
+  // }, []);
+  const navigate = useNavigate();
 
   if (!user) {
     return (
-      <div className="flex w-full h-[135px] rounded-md items-center bg-white p-[30px]">
+      <div
+        onClick={() => {
+          navigate("/login");
+        }}
+        className="flex w-full h-[135px] rounded-md items-center bg-white p-[30px]"
+      >
         로그인 해주세요.
       </div>
     );

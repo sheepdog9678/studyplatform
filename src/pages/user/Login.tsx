@@ -18,9 +18,9 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (username: string, password: string) => {
+  const handleLogin = async (email: string, password: string) => {
     try {
-      await login(username, password);
+      await login({ email, password });
 
       const user = await getUserProfile();
       useAuthStore.getState().setUser(user);
