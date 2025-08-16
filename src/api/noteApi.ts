@@ -7,7 +7,9 @@ export const getNotes = async (): Promise<NoteListResponse> => {
 };
 
 export const getNote = async (noteId: number): Promise<NoteResponse> => {
-  const response = await api.get(`/api/note/${noteId}`);
+  console.log(noteId);
+
+  const response = await api.get(`/api/notes/${noteId}`);
   return response.data;
 };
 
@@ -27,9 +29,12 @@ export const updateNote = async (
   data: { title: string; content: string }
 ): Promise<Note> => {
   const response = await api.put(`/api/notes/${noteId}`, data);
+  console.log(response);
   return response.data;
 };
 
 export const deleteNote = async (noteId: number): Promise<void> => {
-  await api.delete(`/api/notes/${noteId}`);
+  await api.delete(`/api/notes/${noteId}`, {
+    data: { noteId },
+  });
 };

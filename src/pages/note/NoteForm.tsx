@@ -57,6 +57,7 @@ const NoteForm: React.FC = () => {
       //   };
       // }
       // 실제 API
+      console.log(data);
       await updateNote(Number(noteId), data);
 
       navigate(`/note/${noteId}`);

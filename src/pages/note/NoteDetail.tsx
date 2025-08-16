@@ -2,9 +2,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import { Note } from "../../types/note";
-import { dummyNotes } from "../../data/notedata";
-// import { deleteNote } from "../../api/noteApi";
-// import { getNote } from "../api/noteApi";
+// import { dummyNotes } from "../../data/notedata";
+import { deleteNote } from "../../api/noteApi";
+import { getNote } from "../../api/noteApi";
 
 const NoteDetail: React.FC = () => {
   const { noteId } = useParams<{ noteId: string }>();
@@ -12,30 +12,30 @@ const NoteDetail: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // API 연결 후 교체
-    // if (noteId) {
-    //   getNote(Number(noteId))
-    //     .then((res) => setNote(res.data))
-    //     .catch((err) => console.error("노트 불러오기 실패:", err));
-    // }
-
+    //API 연결 후 교체
     if (noteId) {
-      const found = dummyNotes.find((n) => n.noteId === Number(noteId));
-      setNote(found || null);
+      getNote(Number(noteId))
+        .then((res) => setNote(res.data))
+        .catch((err) => console.error("노트 불러오기 실패:", err));
     }
+
+    // if (noteId) {
+    //   const found = dummyNotes.find((n) => n.noteId === Number(noteId));
+    //   setNote(found || null);
+    // }
   }, [noteId]);
 
   const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-        const index = dummyNotes.findIndex(
-          (note) => note.noteId === Number(noteId)
-        );
-        if (index !== -1) {
-          dummyNotes.splice(index, 1);
-        }
+        // const index = dummyNotes.findIndex(
+        //   (note) => note.noteId === Number(noteId)
+        // );
+        // if (index !== -1) {
+        //   dummyNotes.splice(index, 1);
+        // }
         // api 통신후
-        // await deleteNote(Number(noteId));
+        await deleteNote(Number(noteId));
         navigate("/note");
       } catch (err) {
         alert("삭제 실패");
