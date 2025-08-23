@@ -28,16 +28,26 @@ export const updateGroup = async (
 };
 
 export const deleteGroup = async (groupId: number): Promise<void> => {
-  await api.delete(`/api/groups/${groupId}`);
+  await api.delete(`/api/groups/${groupId}`, {
+    data: {
+      groupId,
+    },
+  });
 };
 
 export const joinGroup = async (data: {
   memberId: number;
   groupId: number;
 }): Promise<Group> => {
-  const response = await api.post(
-    `/api/groups/${data.groupId}/member`,
-    data.memberId
-  );
+  const response = await api.post(`/api/groups/${data.groupId}/member`, {
+    memberId: data.memberId,
+  });
+  return response.data;
+};
+
+export const searchGroups = async (name: string) => {
+  const response = await api.get("/api/groups/search", {
+    params: { name },
+  });
   return response.data;
 };

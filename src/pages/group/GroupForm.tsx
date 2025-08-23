@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { dummyGroups } from "../../data/dummyGroups";
+// import { dummyGroups } from "../../data/dummyGroups";
 import { useEffect } from "react";
-// import { createGroup, updateGroup, getGroup } from "../../api/groupApi";
+import { createGroup, updateGroup, getGroup } from "../../api/groupApi";
 
 type GroupFormInputs = {
   groupName: string;
@@ -25,50 +25,59 @@ const GroupForm: React.FC = () => {
   // 수정일 경우 기존 값 세팅
   useEffect(() => {
     if (isEdit) {
-      const group = dummyGroups.find((g) => g.groupId === Number(groupId));
-      if (group) {
-        setValue("groupName", group.groupName);
-        setValue("maxParticipants", group.maxParticipants);
-      }
-
-      // getGroup(Number(groupId)).then((res) => {
-      //   setValue("groupName", res.data.groupName);
+      // const group = dummyGroups.find((g) => g.groupId === Number(groupId));
+      // if (group) {
+      //   setValue("groupName", group.groupName);
       //   setValue("maxParticipants", group.maxParticipants);
-      // });
+      // }
+
+      getGroup(Number(groupId)).then((res) => {
+        setValue("groupName", res.data.groupName);
+        setValue("maxParticipants", res.data.maxParticipants);
+      });
     }
   }, [groupId, isEdit, setValue]);
 
   const onSubmit = async (data: GroupFormInputs) => {
     if (isEdit) {
-      const targetIndex = dummyGroups.findIndex(
-        (g) => g.groupId === Number(groupId)
-      );
-      if (targetIndex !== -1) {
-        dummyGroups[targetIndex].groupName = data.groupName;
-        dummyGroups[targetIndex].modifiedAt = new Date().toISOString();
+      //   const targetIndex = dummyGroups.findIndex(
+      //     (g) => g.groupId === Number(groupId)
+      //   );
+      //   if (targetIndex !== -1) {
+      //     dummyGroups[targetIndex].groupName = data.groupName;
+      //     dummyGroups[targetIndex].modifiedAt = new Date().toISOString();
+      //   }
+      //   navigate(`/group/${groupId}`);
+      try {
+        await updateGroup(Number(groupId), data);
+        navigate(`/group/${groupId}`);
+      } catch (err) {
+        alert("그룹 생성 실패");
       }
-      navigate(`/group/${groupId}`);
-      // await updateGroup(Number(groupId), data);
     } else {
-      const newId = dummyGroups.length
-        ? Math.max(...dummyGroups.map((g) => g.groupId)) + 1
-        : 1;
+      // const newId = dummyGroups.length
+      //   ? Math.max(...dummyGroups.map((g) => g.groupId)) + 1
+      //   : 1;
 
-      const newGroup = {
-        groupId: newId,
-        managerId: 1, // 임시 관리자 ID
-        memberIds: [1],
-        memberNicknames: ["온라인 독서실"],
-        groupName: data.groupName,
-        maxParticipants: data.maxParticipants,
-        createdAt: new Date().toISOString(),
-        modifiedAt: new Date().toISOString(),
-      };
+      // const newGroup = {
+      //   groupId: newId,
+      //   managerId: 1, // 임시 관리자 ID
+      //   memberIds: [1],
+      //   memberNicknames: ["온라인 독서실"],
+      //   groupName: data.groupName,
+      //   maxParticipants: data.maxParticipants,
+      //   createdAt: new Date().toISOString(),
+      //   modifiedAt: new Date().toISOString(),
+      // };
 
-      dummyGroups.push(newGroup);
-      navigate("/group");
+      // dummyGroups.push(newGroup);
 
-      // await createGroup(data);
+      try {
+        await createGroup(data);
+        navigate("/group");
+      } catch (err) {
+        alert("그룹 생성 실패");
+      }
     }
   };
 

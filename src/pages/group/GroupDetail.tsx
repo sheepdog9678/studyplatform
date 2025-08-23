@@ -1,18 +1,35 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
-import { dummyGroups } from "../../data/dummyGroups";
+// import { dummyGroups } from "../../data/dummyGroups";
 import { Group } from "../../types/group";
-import { deleteGroup } from "../../api/groupApi";
+import { deleteGroup, getGroup, joinGroup } from "../../api/groupApi";
 import { useAuthStore } from "../../store/authStore";
 import MemberCard from "../../components/group/MemberCard";
+import { useEffect, useState } from "react";
 
 const GroupDetail: React.FC = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
+  const [group, setGroup] = useState<Group | null>(null);
+  const [reloadTrigger, setReloadTrigger] = useState(0);
+  useEffect(() => {
+    const fetchGroup = async () => {
+      try {
+        const res = await getGroup(Number(groupId));
+        console.log("res", res);
 
-  const group: Group | undefined = dummyGroups.find(
-    (g) => g.groupId === Number(groupId)
-  );
+        setGroup(res.data);
+      } catch (error) {
+        console.error("그룹 불러오기 실패:", error);
+      }
+    };
+
+    fetchGroup();
+  }, [groupId, reloadTrigger]);
+
+  // const group: Group | undefined = dummyGroups.find(
+  //   (g) => g.groupId === Number(groupId)
+  // );
 
   const handleDelete = async () => {
     if (!groupId) return;
@@ -30,35 +47,41 @@ const GroupDetail: React.FC = () => {
     }
   };
   const { user } = useAuthStore();
-  const isManager = user?.id === group?.managerId;
-  const isMember = group?.memberIds.includes(user?.id ?? -1) || isManager;
 
-  const joinGroupDummy = (
-    groupId: number,
-    userId: number
-  ): Group | undefined => {
-    const group = dummyGroups.find((g) => g.groupId === groupId);
-    if (!group) return undefined;
+  const isManager = user?.memberId === group?.managerId;
+  console.log(user);
+  const isMember =
+    (group?.memberIds?.includes?.(user?.memberId ?? -1) ?? false) || isManager;
+  // const joinGroupDummy = (
+  //   groupId: number,
+  //   userId: number
+  // ): Group | undefined => {
+  //   const group = dummyGroups.find((g) => g.groupId === groupId);
+  //   if (!group) return undefined;
 
-    // 이미 가입되어 있는지 확인
-    if (!group.memberIds.includes(userId)) {
-      group.memberIds.push(userId);
-    }
+  //   // 이미 가입되어 있는지 확인
+  //   if (!group.memberIds.includes(userId)) {
+  //     group.memberIds.push(userId);
+  //   }
 
-    return group;
-  };
+  //   return group;
+  // };
+  const [isJoining, setIsJoining] = useState(false);
 
   const handleJoin = async () => {
-    if (!user?.id || !groupId) return;
+    if (!user?.memberId || !groupId || isJoining) return;
+
+    setIsJoining(true);
     try {
-      //   const joinedGroup = await joinGroup({
-      //     groupId: Number(groupId),
-      //     memberId: user.id,
-      //   });
-      const joinedGroup = joinGroupDummy(Number(groupId), user.id);
+      const joinedGroup = await joinGroup({
+        groupId: Number(groupId),
+        memberId: user.memberId,
+      });
+      console.log("joinedGroup", joinedGroup);
+      // const joinedGroup = joinGroupDummy(Number(groupId), user.id);
       if (joinedGroup) {
         alert("그룹에 참여했습니다!");
-        navigate(`/group/${joinedGroup.groupId}`);
+        setReloadTrigger((prev) => prev + 1);
       } else {
         alert("그룹을 찾을 수 없습니다.");
       }
@@ -119,9 +142,10 @@ const GroupDetail: React.FC = () => {
           )}
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-          {group.memberNicknames.map((name, index) => (
-            <MemberCard key={index} nickname={name} />
-          ))}
+          {Array.isArray(group?.memberNicknames) &&
+            group.memberNicknames.map((name, index) => (
+              <MemberCard key={index} nickname={name} />
+            ))}
         </div>
       </div>
     </Layout>

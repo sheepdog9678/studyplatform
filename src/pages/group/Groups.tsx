@@ -3,18 +3,35 @@ import Layout from "../../components/layout/Layout";
 import GroupCard from "../../components/group/GroupCard";
 import AddButton from "../../components/common/AddButton";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAuthStore } from "../../store/authStore";
-// import { getGroups } from "../../api/groupApi";
+// import { useAuthStore } from "../../store/authStore";
+import { getGroups } from "../../api/groupApi";
+import { useEffect, useState } from "react";
+import { Group } from "../../types/group";
 
 const Groups: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const [groups, setGroups] = useState<Group[]>();
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const res = await getGroups();
+        console.log("res", res);
+
+        setGroups(res.data);
+      } catch (error) {
+        console.error("그룹 불러오기 실패:", error);
+      }
+    };
+
+    fetchGroups();
+  }, []);
 
   return (
     <Layout title="그룹 리스트" showBackButton backTo="/">
       <div className="h-full overflow-auto flex flex-col gap-3">
-        {user ? (
-          user?.groupList.map((group) => (
+        {groups ? (
+          groups.map((group) => (
             <div
               key={group.groupId}
               onClick={() => navigate(`/group/${group.groupId}`)}
@@ -22,7 +39,7 @@ const Groups: React.FC = () => {
             >
               <GroupCard
                 groupName={group.groupName}
-                currentMembers={group.memberIds.length}
+                currentMembers={group.memberIds.length || 0}
                 maxMembers={group.maxParticipants}
               />
             </div>

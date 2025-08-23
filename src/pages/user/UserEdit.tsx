@@ -11,14 +11,12 @@ const UserEdit = () => {
   useEffect(() => {
     // 개발 중 테스트용
     useAuthStore.getState().setToken("dummy-token");
-    useAuthStore
-      .getState()
-      .setUser({
-        id: 1,
-        groupList: [],
-        nickname: "testuser",
-        status: "STUDENT",
-      });
+    useAuthStore.getState().setUser({
+      memberId: 1,
+      groupList: [],
+      nickname: "testuser",
+      status: "STUDENT",
+    });
   }, []);
   const navigate = useNavigate();
 

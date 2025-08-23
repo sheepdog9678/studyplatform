@@ -2,7 +2,7 @@ import { Status } from "./auth";
 import { Group } from "./group";
 
 export type User = {
-  id: number;
+  memberId: number;
   nickname: string;
   status: Status;
   groupList: Group[];

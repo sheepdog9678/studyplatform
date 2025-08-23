@@ -10,7 +10,5 @@ export type Group = {
 };
 
 export type GroupListResponse = {
-  data: {
-    content: Group[];
-  };
+  data: Group[];
 };

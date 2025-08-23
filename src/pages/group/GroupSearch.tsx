@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import GroupCard from "../../components/group/GroupCard";
-import { dummyGroups } from "../../data/dummyGroups"; // 백 연결 전
+// import { dummyGroups } from "../../data/dummyGroups"; // 백 연결 전
 import { Group } from "../../types/group";
 import { useNavigate } from "react-router-dom";
 import AddButton from "../../components/common/AddButton";
-// import { getGroups } from "../../api/groupApi";
+import { searchGroups } from "../../api/groupApi";
 
 const GroupSearch: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [searchInput, setSearchInput] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const nameQuery = searchParams.get("name") ?? "";
+
   useEffect(() => {
-    setGroups(dummyGroups);
-    // const fetchGroups = async () => {
-    //   try {
-    //     const res = await getGroups();
-    //     setGroups(res.data.content);
-    //   } catch (error) {
-    //     console.error("그룹 목록 불러오기 실패:", error);
-    //   }
-    // };
-    // fetchGroups();
-  }, []);
+    // setGroups(dummyGroups);
+    const fetchGroups = async () => {
+      try {
+        const res = await searchGroups(nameQuery);
+        setGroups(res.data);
+        setSearchInput(nameQuery);
+      } catch (error) {
+        console.error("그룹 목록 불러오기 실패:", error);
+      }
+    };
+    fetchGroups();
+  }, [nameQuery]);
 
   const handleSearch = () => {
-    setSearchTerm(searchInput); // 버튼 클릭 시 검색어 갱신
+    setSearchParams({ name: searchInput.trim() });
   };
-
-  const filteredGroups = groups.filter((group) =>
-    group.groupName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <Layout title="그룹 검색" showBackButton>
@@ -54,8 +54,8 @@ const GroupSearch: React.FC = () => {
         </div>
         {/* 그룹 리스트 */}
         <div className="flex flex-col gap-3">
-          {filteredGroups.length > 0 ? (
-            filteredGroups.map((group) => (
+          {groups.length > 0 ? (
+            groups.map((group) => (
               <div
                 key={group.groupId}
                 onClick={() => navigate(`/group/${group.groupId}`)}
